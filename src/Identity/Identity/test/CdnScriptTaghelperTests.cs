@@ -26,7 +26,7 @@ namespace Microsoft.AspNetCore.Identity.Test
         public async Task IdentityUI_ScriptTags_SubresourceIntegrityCheck()
         {
             var slnDir = GetSolutionDir();
-            var sourceDir = Path.Combine(slnDir, "src", "UI");
+            var sourceDir = Path.Combine(slnDir, "UI", "src");
             var cshtmlFiles = Directory.GetFiles(sourceDir, "*.cshtml", SearchOption.AllDirectories);
 
             var scriptTags = new List<ScriptTag>();
