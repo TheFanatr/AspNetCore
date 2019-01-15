@@ -72,13 +72,11 @@ namespace Microsoft.AspNetCore.Mvc.Razor
         private static TestRazorPage CreateTestRazorPage()
         {
             var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var modelExpressionProvider = new ModelExpressionProvider(modelMetadataProvider, new ExpressionTextCache());
+            var modelExpressionProvider = new ModelExpressionProvider(modelMetadataProvider);
             var activator = new RazorPageActivator(
                 modelMetadataProvider,
                 new UrlHelperFactory(),
-                new JsonHelper(
-                    new JsonOutputFormatter(new JsonSerializerSettings(), ArrayPool<char>.Shared),
-                    ArrayPool<char>.Shared),
+                Mock.Of<IJsonHelper>(),
                 new DiagnosticListener("Microsoft.AspNetCore"),
                 new HtmlTestEncoder(),
                 modelExpressionProvider);

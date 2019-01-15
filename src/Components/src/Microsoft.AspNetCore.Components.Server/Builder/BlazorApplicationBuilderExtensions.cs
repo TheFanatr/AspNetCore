@@ -87,12 +87,6 @@ namespace Microsoft.AspNetCore.Builder
                 });
             }
 
-            // Accept debugger connections
-            if (config.EnableDebugging)
-            {
-                app.UseMonoDebugProxy();
-            }
-
             // Finally, use SPA fallback routing (serve default page for anything else,
             // excluding /_framework/*)
             app.MapWhen(IsNotFrameworkDir, childAppBuilder =>
@@ -141,7 +135,7 @@ namespace Microsoft.AspNetCore.Builder
             return null;
         }
 
-        private static void SetCacheHeaders(StaticFileResponseContext ctx)
+        internal static void SetCacheHeaders(StaticFileResponseContext ctx)
         {
             // By setting "Cache-Control: no-cache", we're allowing the browser to store
             // a cached copy of the response, but telling it that it must check with the
@@ -165,16 +159,23 @@ namespace Microsoft.AspNetCore.Builder
         private static IContentTypeProvider CreateContentTypeProvider(bool enableDebugging)
         {
             var result = new FileExtensionContentTypeProvider();
-            result.Mappings.Add(".dll", MediaTypeNames.Application.Octet);
-            result.Mappings.Add(".mem", MediaTypeNames.Application.Octet);
-            result.Mappings.Add(".wasm", WasmMediaTypeNames.Application.Wasm);
+            AddMapping(result, ".dll", MediaTypeNames.Application.Octet);
+            AddMapping(result, ".wasm", WasmMediaTypeNames.Application.Wasm);
 
             if (enableDebugging)
             {
-                result.Mappings.Add(".pdb", MediaTypeNames.Application.Octet);
+                AddMapping(result, ".pdb", MediaTypeNames.Application.Octet);
             }
 
             return result;
+        }
+
+        private static void AddMapping(FileExtensionContentTypeProvider provider, string name, string mimeType)
+        {
+            if (!provider.Mappings.ContainsKey(name))
+            {
+                provider.Mappings.Add(name, mimeType);
+            }
         }
     }
 }

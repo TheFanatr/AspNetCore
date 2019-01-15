@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <RootNamespace Condition="'$(name)' != '$(name{-VALUE-FORMS-}safe_namespace)'">RazorComponentsWeb_CSharp.App</RootNamespace>
+  </PropertyGroup>
+
+  <!-- TODO: Remove this once it's included in the shared framework -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="${MicrosoftAspNetCoreComponentsPackageVersion}" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Build" Version="${MicrosoftAspNetCoreComponentsPackageVersion}" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Sdk.Razor" Version="${MicrosoftNETSdkRazorPackageVersion}" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

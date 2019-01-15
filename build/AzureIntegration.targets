@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <AzureIntegrationProjectRoot>$(MSBuildThisFileDirectory)..\modules\AzureIntegration\</AzureIntegrationProjectRoot>
+    <AzureIntegrationProjectRoot>$(MSBuildThisFileDirectory)..\src\AzureIntegration\</AzureIntegrationProjectRoot>
   </PropertyGroup>
 
   <Target Name="BuildAzureIntegration" DependsOnTargets="PrepareOutputPaths;GeneratePropsFiles">
@@ -25,7 +25,7 @@
       <AzureIntegrationArtifacts Include="$(AzureIntegrationProjectRoot)artifacts\build\*" />
     </ItemGroup>
 
-    <Copy SourceFiles="@(AzureIntegrationArtifacts)" DestinationFolder="$(BuildDir)" />
+    <Copy SourceFiles="@(AzureIntegrationArtifacts)" DestinationFolder="$(ProductPackageOutputPath)" />
   </Target>
 
 </Project>

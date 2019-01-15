@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Buffers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Filters;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
@@ -144,8 +145,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddEnumerable(
                 ServiceDescriptor.Transient<IConfigureOptions<MvcViewOptions>, MvcViewOptionsSetup>());
             services.TryAddEnumerable(
-                ServiceDescriptor.Transient<IPostConfigureOptions<MvcViewOptions>, MvcViewOptionsConfigureCompatibilityOptions>());
-            services.TryAddEnumerable(
                 ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, TempDataMvcOptionsSetup>());
 
             //
@@ -166,20 +165,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<IHtmlHelper, HtmlHelper>();
             services.TryAddTransient(typeof(IHtmlHelper<>), typeof(HtmlHelper<>));
             services.TryAddSingleton<IHtmlGenerator, DefaultHtmlGenerator>();
-            services.TryAddSingleton<ExpressionTextCache>();
-            services.TryAddSingleton<IModelExpressionProvider, ModelExpressionProvider>();
+            services.TryAddSingleton<ModelExpressionProvider>();
+            // ModelExpressionProvider caches results. Ensure that it's re-used when the requested type is IModelExpressionProvider.
+            services.TryAddSingleton<IModelExpressionProvider>(s => s.GetRequiredService<ModelExpressionProvider>());
             services.TryAddSingleton<ValidationHtmlAttributeProvider, DefaultValidationHtmlAttributeProvider>();
 
-            //
-            // JSON Helper
-            //
-            services.TryAddSingleton<IJsonHelper, JsonHelper>();
-            services.TryAdd(ServiceDescriptor.Singleton(serviceProvider =>
-            {
-                var options = serviceProvider.GetRequiredService<IOptions<MvcJsonOptions>>().Value;
-                var charPool = serviceProvider.GetRequiredService<ArrayPool<char>>();
-                return new JsonOutputFormatter(options.SerializerSettings, charPool);
-            }));
+            services.TryAddSingleton<IJsonHelper, DefaultJsonHelper>();
 
             //
             // View Components
@@ -213,6 +204,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // This does caching so it should stay singleton
             services.TryAddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.TryAddSingleton<TempDataSerializer, DefaultTempDataSerializer>();
 
             //
             // Antiforgery

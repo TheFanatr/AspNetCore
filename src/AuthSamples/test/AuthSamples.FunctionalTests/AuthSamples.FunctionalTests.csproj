@@ -1,15 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
-
-    <!-- Workaround for https://github.com/dotnet/sdk/issues/1729 -->
-  <Target Name="ResetPlatformTarget" BeforeTargets="CoreCompile" Condition="'$(TargetFramework)'=='netcoreapp2.1'">
-    <PropertyGroup>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-    </PropertyGroup>
-  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\..\samples\Cookies\Cookies.csproj" />
